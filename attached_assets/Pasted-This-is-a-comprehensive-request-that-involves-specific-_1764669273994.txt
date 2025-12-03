@@ -1,0 +1,73 @@
+This is a comprehensive request that involves specific user flows (like the manual download/upload registration) and complex role management.
+
+Below is a detailed **System Prompt (MVP Specification)**. You can copy and paste this text into an AI coding assistant (like ChatGPT, Claude, or a Cursor IDE agent) to generate the code structure, database schema, or UI design.
+
+***
+
+### The Prompt to Copy
+
+**Role:** Act as a Senior Full-Stack Web Developer and UI/UX Designer.
+
+**Project:** Create a Minimum Viable Product (MVP) architecture and code structure for a school management portal named **"Al-Furqan Group of Schools"**.
+
+**Core Objective:** Build a responsive web application with a public-facing frontend and secured role-based dashboards (Admin, Management, Staff, Student).
+
+**1. Public Facing Website:**
+* **Home Page:** specific, high-quality components showcasing the school.
+* **About Page:** Must include a "History of the School" section.
+* **Navigation:** clear links to the Portal Login.
+
+**2. Authentication & Security:**
+* **Login Logic:** Users do *not* use email/password.
+    * **Username:** System-generated ID (given during registration).
+    * **Password:** User's Surname.
+* **Roles:** Super Admin (Builder), Management, Staff, Student.
+
+**3. Unique Registration Workflow (The "Documentation" System):**
+* *This is a strict requirement:* Users cannot simply fill a web form to register immediately.
+* **Step 1:** The Admin (Builder) uploads registration forms/PDFs to the server.
+* **Step 2:** New Staff/Students access a "Pre-Registration" page to download these documents.
+* **Step 3:** Users print, fill manually, and scan the documents.
+* **Step 4:** Users upload the scanned documents back to the portal.
+* **Step 5:** Admin reviews the upload. Upon approval, the system generates their **Unique ID** and activates their account.
+
+**4. Dashboard Requirements:**
+
+**A. Super Admin (Builder) Dashboard:**
+* **Document Management:** Ability to upload/update the printable registration forms.
+* **User Management:** View uploaded registration scans, approve/reject applications, and issue Student/Staff IDs.
+* **General Settings:** Control global site variables.
+
+**B. Staff (Teacher) Dashboard:**
+* **Timetable:** View assigned class schedules.
+* **Subject Management:** View specific subjects and classes assigned to them.
+* **Payroll:** specific input field to enter/update their **Bank Account Number** for management to process salaries.
+* **Result Entry:** A grade book interface to input test/exam scores for their specific students.
+* **Notice Board:** View announcements from the Principal.
+
+**C. Student Dashboard:**
+* **Notice Board:** View school announcements.
+* **Result Portal:** View academic results.
+    * *Constraint:* Final results must be **Hidden** by default until the Management/Admin globally toggles "Release Results."
+* **Fee Payment Info:** View the School’s Bank Account Number specific to their Department/Class level.
+
+**D. Management (Principal/Finance) Dashboard:**
+* **Payroll System:** View a list of all Staff members and their input Bank Account Numbers to process payments. View payment history logs.
+* **Notice Board Admin:** Ability to create and post notices visible to Staff and Students.
+* **Financials:** View fee payment instructions per class.
+
+**5. Technical Stack Preference:**
+* Please suggest the best structure using [Insert your preferred stack here, e.g., HTML/CSS/JS + Firebase, or React + Node.js, or PHP/MySQL].
+
+**Deliverables:**
+1.  Provide the **Database Schema** (tables and relationships) to handle this unique data flow.
+2.  Provide the **Folder Structure** for the project.
+3.  Write the **HTML/CSS/JS** code for the **Staff Dashboard** specifically focusing on the Result Entry and Bank Account Input sections.
+
+***
+
+### How to use this prompt
+1.  **Select a Tech Stack:** In section 5, decide what you want to use. Since you are a frontend developer, you might want to specify **"HTML, Tailwind CSS, and JavaScript with Firebase"** or **"PHP and MySQL"** depending on your backend preference.
+2.  **Paste and Iterate:** Paste this prompt into your AI tool. Once it generates the structure, you can ask it to "Code the Registration Upload page" or "Code the Result Checking logic."
+
+**Would you like me to generate the Database Schema (step 1 of the deliverables) for you right now so you can see how the tables should relate?**
