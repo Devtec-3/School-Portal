@@ -1,15 +1,35 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, integer, boolean, timestamp, pgEnum, jsonb } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  text,
+  varchar,
+  integer,
+  boolean,
+  timestamp,
+  pgEnum,
+  jsonb,
+} from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-export const userRoleEnum = pgEnum("user_role", ["super_admin", "management", "staff", "student"]);
-export const registrationStatusEnum = pgEnum("registration_status", ["pending", "approved", "rejected"]);
-export const termEnum = pgEnum("term", ["first", "second", "third"]);
+export const userRoleEnum = pgEnum("user_role", [
+  "super_admin",
+  "management",
+  "staff",
+  "student",
+]);
+export const registrationStatusEnum = pgEnum("registration_status", [
+  "pending",
+  "approved",
+  "rejected",
+]);
+export const termEnum = pgEnum("term", ["first", "second", "third", "all"]);
 
 export const users = pgTable("users", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  id: varchar("id")
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
   uniqueId: text("unique_id").notNull().unique(),
   surname: text("surname").notNull(),
   firstName: text("first_name").notNull(),
@@ -28,7 +48,9 @@ export const users = pgTable("users", {
 });
 
 export const registrationForms = pgTable("registration_forms", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  id: varchar("id")
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
   title: text("title").notNull(),
   description: text("description"),
   fileUrl: text("file_url").notNull(),
@@ -39,7 +61,9 @@ export const registrationForms = pgTable("registration_forms", {
 });
 
 export const registrationApplications = pgTable("registration_applications", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  id: varchar("id")
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
   applicantName: text("applicant_name").notNull(),
   applicantEmail: text("applicant_email"),
   applicantPhone: text("applicant_phone").notNull(),
@@ -54,7 +78,9 @@ export const registrationApplications = pgTable("registration_applications", {
 });
 
 export const classes = pgTable("classes", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  id: varchar("id")
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
   level: text("level").notNull(),
   department: text("department"),
@@ -62,7 +88,9 @@ export const classes = pgTable("classes", {
 });
 
 export const subjects = pgTable("subjects", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  id: varchar("id")
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
   code: text("code"),
   classId: varchar("class_id").references(() => classes.id),
@@ -70,7 +98,9 @@ export const subjects = pgTable("subjects", {
 });
 
 export const timetables = pgTable("timetables", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  id: varchar("id")
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
   subjectId: varchar("subject_id").references(() => subjects.id),
   teacherId: varchar("teacher_id").references(() => users.id),
   classId: varchar("class_id").references(() => classes.id),
@@ -80,7 +110,9 @@ export const timetables = pgTable("timetables", {
 });
 
 export const results = pgTable("results", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  id: varchar("id")
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
   studentId: varchar("student_id").references(() => users.id),
   subjectId: varchar("subject_id").references(() => subjects.id),
   classId: varchar("class_id").references(() => classes.id),
@@ -96,7 +128,9 @@ export const results = pgTable("results", {
 });
 
 export const notices = pgTable("notices", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  id: varchar("id")
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
   title: text("title").notNull(),
   content: text("content").notNull(),
   targetAudience: text("target_audience").notNull(),
@@ -108,7 +142,9 @@ export const notices = pgTable("notices", {
 });
 
 export const payrollRecords = pgTable("payroll_records", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  id: varchar("id")
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
   staffId: varchar("staff_id").references(() => users.id),
   amount: integer("amount").notNull(),
   month: text("month").notNull(),
@@ -120,7 +156,9 @@ export const payrollRecords = pgTable("payroll_records", {
 });
 
 export const feeStructures = pgTable("fee_structures", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  id: varchar("id")
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
   classLevel: text("class_level").notNull(),
   department: text("department"),
   amount: integer("amount").notNull(),
@@ -138,15 +176,27 @@ export const alumni = pgTable("alumni", {
   profileImage: text("profile_image"),
   description: text("description"),
   achievement: text("achievement"),
-  currentPosition: text("current_position"),
+  
+  // ✅ CHANGE THIS LINE: used to be 'currentPosition'
+  profession: text("profession"), 
+  
   isVisible: boolean("is_visible").notNull().default(true),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+
 export const featuredTeachers = pgTable("featured_teachers", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  id: varchar("id")
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
   userId: varchar("user_id").references(() => users.id),
   name: text("name").notNull(),
+
+  // ✅ Added all missing columns here:
+  position: text("position"),
+  department: text("department"),
+  specialization: text("specialization"), // This fixes the error you are seeing now
+
   subject: text("subject"),
   qualification: text("qualification"),
   profileImage: text("profile_image"),
@@ -157,7 +207,9 @@ export const featuredTeachers = pgTable("featured_teachers", {
 });
 
 export const siteSettings = pgTable("site_settings", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  id: varchar("id")
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
   key: text("key").notNull().unique(),
   value: text("value").notNull(),
   description: text("description"),
@@ -181,30 +233,67 @@ export const subjectsRelations = relations(subjects, ({ one, many }) => ({
 
 export const resultsRelations = relations(results, ({ one }) => ({
   student: one(users, { fields: [results.studentId], references: [users.id] }),
-  subject: one(subjects, { fields: [results.subjectId], references: [subjects.id] }),
+  subject: one(subjects, {
+    fields: [results.subjectId],
+    references: [subjects.id],
+  }),
   class: one(classes, { fields: [results.classId], references: [classes.id] }),
 }));
 
-export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true });
-export const insertRegistrationFormSchema = createInsertSchema(registrationForms).omit({ id: true, createdAt: true });
-export const insertRegistrationApplicationSchema = createInsertSchema(registrationApplications).omit({ id: true, createdAt: true, reviewedAt: true });
+export const insertUserSchema = createInsertSchema(users).omit({
+  id: true,
+  createdAt: true,
+});
+export const insertRegistrationFormSchema = createInsertSchema(
+  registrationForms
+).omit({ id: true, createdAt: true });
+export const insertRegistrationApplicationSchema = createInsertSchema(
+  registrationApplications
+).omit({ id: true, createdAt: true, reviewedAt: true });
 export const insertClassSchema = createInsertSchema(classes).omit({ id: true });
-export const insertSubjectSchema = createInsertSchema(subjects).omit({ id: true });
-export const insertTimetableSchema = createInsertSchema(timetables).omit({ id: true });
-export const insertResultSchema = createInsertSchema(results).omit({ id: true, createdAt: true });
-export const insertNoticeSchema = createInsertSchema(notices).omit({ id: true, createdAt: true });
-export const insertPayrollRecordSchema = createInsertSchema(payrollRecords).omit({ id: true, createdAt: true, processedAt: true });
-export const insertFeeStructureSchema = createInsertSchema(feeStructures).omit({ id: true });
-export const insertAlumniSchema = createInsertSchema(alumni).omit({ id: true, createdAt: true });
-export const insertFeaturedTeacherSchema = createInsertSchema(featuredTeachers).omit({ id: true, createdAt: true });
-export const insertSiteSettingSchema = createInsertSchema(siteSettings).omit({ id: true, updatedAt: true });
+export const insertSubjectSchema = createInsertSchema(subjects).omit({
+  id: true,
+});
+export const insertTimetableSchema = createInsertSchema(timetables).omit({
+  id: true,
+});
+export const insertResultSchema = createInsertSchema(results).omit({
+  id: true,
+  createdAt: true,
+});
+export const insertNoticeSchema = createInsertSchema(notices).omit({
+  id: true,
+  createdAt: true,
+});
+export const insertPayrollRecordSchema = createInsertSchema(
+  payrollRecords
+).omit({ id: true, createdAt: true, processedAt: true });
+export const insertFeeStructureSchema = createInsertSchema(feeStructures).omit({
+  id: true,
+});
+export const insertAlumniSchema = createInsertSchema(alumni).omit({
+  id: true,
+  createdAt: true,
+});
+export const insertFeaturedTeacherSchema = createInsertSchema(
+  featuredTeachers
+).omit({ id: true, createdAt: true });
+export const insertSiteSettingSchema = createInsertSchema(siteSettings).omit({
+  id: true,
+  updatedAt: true,
+});
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
-export type InsertRegistrationForm = z.infer<typeof insertRegistrationFormSchema>;
+export type InsertRegistrationForm = z.infer<
+  typeof insertRegistrationFormSchema
+>;
 export type RegistrationForm = typeof registrationForms.$inferSelect;
-export type InsertRegistrationApplication = z.infer<typeof insertRegistrationApplicationSchema>;
-export type RegistrationApplication = typeof registrationApplications.$inferSelect;
+export type InsertRegistrationApplication = z.infer<
+  typeof insertRegistrationApplicationSchema
+>;
+export type RegistrationApplication =
+  typeof registrationApplications.$inferSelect;
 export type InsertClass = z.infer<typeof insertClassSchema>;
 export type Class = typeof classes.$inferSelect;
 export type InsertSubject = z.infer<typeof insertSubjectSchema>;
